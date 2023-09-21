@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+    .timer-container {
+      text-align: center;
+      margin: 50px auto;
+      max-width: 400px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+    #timer {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+    button {
+      font-size: 18px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="timer-container">
+    <div id="timer">00:00:00</div>
+    <button id="start">Start</button>
+    <button id="stop" disabled>Stop</button>
+    <button id="reset" disabled>Reset</button>
+  </div>
+
+  <script>
+    let countdown;
+    let timerRunning = false;
+    let initialTime = 60; // Initial time in seconds
+
+    function startTimer() {
+      const timerDisplay = document.getElementById('timer');
+      let endTime = Date.now() + initialTime * 1000;
+      timerRunning = true;
+
+      function updateTimer() {
+        const currentTime = endTime - Date.now();
+        if (currentTime <= 0) {
+          clearInterval(countdown);
+          timerRunning = false;
+          timerDisplay.textContent = '00:00:00';
+          document.getElementById('start').disabled = false;
+          document.getElementById('stop').disabled = true;
+          document.getElementById('reset').disabled = true;
+          return;
+        }
+
+        const hours = Math.floor(currentTime / 3600000);
+        const minutes = Math.floor((currentTime % 3600000) / 60000);
+        const seconds = Math.floor((currentTime % 60000) / 1000);
+
+        timerDisplay.textContent = `${String(hours).padStart(2, '0')}:${String(
+          minutes
+        ).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }
+
+      updateTimer();
+      countdown = setInterval(updateTimer, 1000);
+      document.getElementById('start').disabled = true;
+      document.getElementById('stop').disabled = false;
+      document.getElementById('reset').disabled = false;
+    }
+
+    document.getElementById('start').addEventListener('click', () => {
+      if (!timerRunning) {
+        startTimer();
+      }
+    });
+
+    document.getElementById('stop').addEventListener('click', () => {
+      if (timerRunning) {
+        clearInterval(countdown);
+        timerRunning = false;
+        document.getElementById('start').disabled = false;
+        document.getElementById('stop').disabled = true;
+        document.getElementById('reset').disabled = false;
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', () => {
+      if (!timerRunning) {
+        const timerDisplay = document.getElementById('timer');
+        timerDisplay.textContent = '00:00:00';
+        document.getElementById('start').disabled = false;
+        document.getElementById('stop').disabled = true;
+        document.getElementById('reset').disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>
